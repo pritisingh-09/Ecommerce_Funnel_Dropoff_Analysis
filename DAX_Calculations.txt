@@ -1,0 +1,39 @@
+-- Total Sessions from Landing Page
+TotalLanding = 
+CALCULATE(
+    DISTINCTCOUNT('ecommerce_funnel_data'[session_id]), 
+    'ecommerce_funnel_data'[page] = "Landing"
+)
+
+-- Total Sessions from Purchase Page
+TotalPurchase = 
+CALCULATE(
+    DISTINCTCOUNT('ecommerce_funnel_data'[session_id]), 
+    'ecommerce_funnel_data'[page] = "Purchase"
+)
+
+-- Conversion Rate (% of Landing sessions that resulted in Purchase)
+ConversionRate = 
+DIVIDE([TotalPurchase], [TotalLanding], 0)
+
+-- Total Sessions from Product Page
+TotalProduct = 
+CALCULATE(
+    DISTINCTCOUNT('ecommerce_funnel_data'[session_id]), 
+    'ecommerce_funnel_data'[page] = "Product"
+)
+
+-- Drop Off Rate (Landing → Product)
+Drop Off Rate (Landing -> Product) = 
+DIVIDE(
+    [TotalLanding] - [TotalProduct], 
+    [TotalLanding], 
+    0
+)
+
+-- Daily Conversion Rate by Year
+Daily Conversion by Year = 
+AVERAGEX(
+    VALUES('ecommerce_funnel_data'[timestamp]),
+    [ConversionRate]
+)
